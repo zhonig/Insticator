@@ -9,10 +9,10 @@ window.addEventListener("load", function(event) {
 function init(){
 	var totalPrice = 0,
 		totalItems = 0,
-		cart = localStorage.getItem('cart') ? JSON.parse(localStorage.getItem('cart')) : [],
+		cart = localStorage.getItem('cart') ? JSON.parse(localStorage.getItem('cart')) : { items : [] },
 		totalElement = document.getElementsByClassName('total')[0];
 	
-	if(cart.items && cart.items.length > 0){
+	if(cart && cart.items && cart.items.length > 0){
 		for(var i = 0; i < cart.items.length; i++) {
 			totalItems++; //totalItems = totalItems + cart.items[i].cant;
 			totalPrice = totalPrice + (cart.items[i].cant * cart.items[i].price);
@@ -61,7 +61,7 @@ function createStoreItems() {
 			}
 		}
 		wrapper[0].innerHTML = content;
-		localStorage.setItem('storeItems',JSON.stringify(storeItems));
+		localStorage.setItem('storeItems', JSON.stringify(storeItems));
 	});
 }
 
@@ -73,7 +73,7 @@ function addtoCart(id){
 	if(cant <= storeItem.quantityRemaining){
 		if(storeItem) {
 			if(cant > 0) {
-				var cart = localStorage.getItem('cart') ? JSON.parse(localStorage.getItem('cart')) : [];
+				var cart = localStorage.getItem('cart') ? JSON.parse(localStorage.getItem('cart')) : { items : [] };
 				searchStoreItems(cart, storeItem.id, parseInt(cant), storeItem.itemName, parseFloat(storeItem.price).toFixed(2), storeItem.imgSrc, storeItem.quantityRemaining);
 			}
 			else alert('Only quantities greater than zero are allowed');
@@ -100,20 +100,20 @@ function searchStoreItems(cart, id, cant, itemName, price, imgSrc, quantityRemai
 			quantityRemaining : quantityRemaining
 		});
 	}
-	localStorage.setItem('cart',JSON.stringify(cart));
+	localStorage.setItem('cart', JSON.stringify(cart));
 	init();
 	getStoreItems();
 }
 
 function getStoreItems(){
-	var cart = localStorage.getItem('cart') != null ? JSON.parse(localStorage.getItem('cart')) : [],
+	var cart = localStorage.getItem('cart') ? JSON.parse(localStorage.getItem('cart')) : { items : [] },
 		msg = '',
 		wrapper = document.querySelectorAll('ul.cart')[0],
 		total = 0;
 	
 	wrapper.innerHTML = "";
 
-	if(!cart || (cart && cart.items && !cart.items.length)) {
+	if(!cart || (cart && !cart.items) || (cart && cart.items && !cart.items.length)) {
 		wrapper.innerHTML = "<li>Your Shopping Cart is Empty</li>";
 		wrapper.style.left = "-500%";
 		wrapper.style.top = "-10px";
@@ -136,12 +136,12 @@ function getStoreItems(){
 }
 
 function increaseItemQuantity(id){
-	var cart = localStorage.getItem('cart') != null ? JSON.parse(localStorage.getItem('cart')) : [],
+	var cart = localStorage.getItem('cart') ? JSON.parse(localStorage.getItem('cart')) : { items : [] },
 		storeItem = searchArray('id', id, cart.items);
 		
 	storeItem.cant = storeItem.cant + 1;
 	if(storeItem.cant <= storeItem.quantityRemaining){
-		localStorage.setItem('cart',JSON.stringify(cart));
+		localStorage.setItem('cart', JSON.stringify(cart));
 		init();
 		getStoreItems();
 	}
@@ -149,12 +149,12 @@ function increaseItemQuantity(id){
 }
 
 function decreaseItemQuantity(id){
-	var cart = localStorage.getItem('cart') != null ? JSON.parse(localStorage.getItem('cart')) : [],
+	var cart = localStorage.getItem('cart') ? JSON.parse(localStorage.getItem('cart')) : { items : [] },
 		storeItem = searchArray('id', id, cart.items);
 		
 	storeItem.cant = storeItem.cant - 1;
 	if(storeItem.cant > 0){
-		localStorage.setItem('cart',JSON.stringify(cart));
+		localStorage.setItem('cart', JSON.stringify(cart));
 		init();
 		getStoreItems();
 	}
@@ -165,9 +165,9 @@ function removeFromCart(id){
 	if(id && id > 0){
 		var conf = confirm('Are you sure you want to remove item from cart?');
 		if(conf) {
-			var cart = localStorage.getItem('cart') != null ? JSON.parse(localStorage.getItem('cart')) : [];
+			var cart = localStorage.getItem('cart') ? JSON.parse(localStorage.getItem('cart')) : { items : [] };
 			cart.items = cart.items.filter(function(item) { return item.id !== id; });
-			localStorage.setItem('cart',JSON.stringify(cart));
+			localStorage.setItem('cart', JSON.stringify(cart));
 			init();
 			getStoreItems();
 		}
@@ -175,9 +175,9 @@ function removeFromCart(id){
 }
 
 function emptyCart() {
-	var cart = localStorage.getItem('cart') != null ? JSON.parse(localStorage.getItem('cart')) : [];
+	var cart = localStorage.getItem('cart') ? JSON.parse(localStorage.getItem('cart')) : { items : [] };
 	cart.items = [];
-	localStorage.setItem('cart',JSON.stringify(cart));
+	localStorage.setItem('cart', JSON.stringify(cart));
 	init();
 	getStoreItems();
 }
