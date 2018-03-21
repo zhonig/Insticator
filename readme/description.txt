@@ -1,4 +1,3 @@
-
 Description:
   Create a single page application showcasing your new online store utilizing React/Redux or vanilla JS. You will find the list of available items in the "store_items.json" file.
 
@@ -26,3 +25,6 @@ Requirements:
 Let us see your awesome store!:
   Once complete, please send a github link or a zip of your project files when completed. 
 
+Live Website:
+
+http://zackhonig.com/projects/Inventory-And-Shopping-Cart-Application
